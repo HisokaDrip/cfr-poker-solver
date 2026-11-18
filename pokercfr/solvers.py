@@ -58,7 +58,7 @@ class CFR:
         if node.player != i:
             # no "skip if s == 0" here: the subtree still holds infosets of
             # player i whose average strategy needs this iteration's update.
-            # pruning it cost ~6x in exploitability at 300 iters on leduc.
+            # pruning it made dcfr ~100x more exploitable at 300 iters on leduc.
             v = 0.0
             for s, child in zip(strat, node.children):
                 v += s * self._walk(child, i, pi_i, pi_o * s, w)
