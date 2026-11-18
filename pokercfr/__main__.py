@@ -48,7 +48,7 @@ def show_table(game, table, limit):
 
 
 def chart(series, width=56, height=14):
-    """log-scale ascii plot of exploitability curves; series = {name: [(t, e)]}"""
+    """log-log ascii plot of exploitability curves; series = {name: [(t, e)]}"""
     marks = "o+*x"
     pts = [(t, e) for s in series.values() for t, e in s if e > 0]
     lo = math.log10(min(e for _, e in pts))
@@ -57,7 +57,7 @@ def chart(series, width=56, height=14):
     grid = [[" "] * width for _ in range(height)]
     for m, s in zip(marks, series.values()):
         for t, e in s:
-            x = min(int(t / tmax * (width - 1)), width - 1)
+            x = min(int(math.log(t) / math.log(tmax or 2) * (width - 1)), width - 1)
             y = int((hi - math.log10(e)) / (hi - lo or 1) * (height - 1))
             grid[y][x] = m
     lines = []
@@ -66,7 +66,7 @@ def chart(series, width=56, height=14):
         label = f"{val:8.2f} |" if y % 3 == 0 or y == height - 1 else "         |"
         lines.append(label + "".join(row))
     lines.append("         +" + "-" * width)
-    lines.append(f"          1{'iterations':^{width - 8}}{tmax}")
+    lines.append(f"          1{'iterations (log)':^{width - 8}}{tmax}")
     lines.append("          " + "   ".join(f"{m} {name}" for m, name in zip(marks, series)))
     return "\n".join(lines)
 
